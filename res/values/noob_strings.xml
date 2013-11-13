@@ -4,4 +4,9 @@
     <!-- About phone screen, build date of ROM -->
     <string name="build_date">Noobbuilds build date</string>
     <string name="build_date_default">2015-01-01-0000</string>
+     <!-- ADB debugging notifications -->
+    <string name="enable_adb_custom">Android debugging</string>
+    <string name="enable_adb_summary_custom">Enable the Android Debug Bridge (adb) interface</string>
+    <string name="adb_notify">ADB notification</string>
+    <string name="adb_notify_summary">Display a notification when android debugging is enabled</string>   
 </resources>
