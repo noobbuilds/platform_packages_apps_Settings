@@ -2,7 +2,9 @@
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
 <!-- Noob Customization Settings -->    
   <!-- Dashboard -->
-    <string name="header_category_noob">ROM Customization</string>	
+    <string name="header_category_noob">ROM Customization</string>
+    <string name="noob_settings_title">Noob Mods</string>
+    <string name="noob_settings_summary">Customize ROM features</string>	
 
     <!-- About phone screen, build date of ROM -->
     <string name="build_date">Noobbuilds build date</string>
