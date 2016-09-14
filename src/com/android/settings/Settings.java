@@ -162,5 +162,6 @@ public class Settings extends SettingsActivity {
     
     // Noob adds
     public static class NoobSettingsActivity extends SettingsActivity { /* empty */ }
+    public static class SubstratumActivity extends SettingsActivity { /* empty */ }
     public static class SuperSUActivity extends SettingsActivity { /* empty */ }
 }
