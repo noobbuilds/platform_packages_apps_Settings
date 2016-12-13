@@ -1,5 +1,6 @@
 /*
  * Copyright (C) 2015 crDroid Android
+ * Copyright (C) Krexus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +17,6 @@
 
 package com.android.settings.noob;
 
-import android.app.Fragment;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,13 +24,17 @@ import android.view.ViewGroup;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
+import com.android.internal.logging.MetricsLogger;
+import com.android.internal.logging.MetricsProto.MetricsEvent;
+
 import com.android.settings.R;
+import com.android.settings.SettingsPreferenceFragment;
 
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
-public class Changelog extends Fragment {
+public class Changelog extends SettingsPreferenceFragment {
 
     private static final String CHANGELOG_PATH = "/system/etc/Changelog.txt";
 
@@ -68,5 +72,10 @@ public class Changelog extends Fragment {
         scrollView.addView(textView);
 
         return scrollView;
+    }
+
+    @Override
+    protected int getMetricsCategory() {
+        return MetricsEvent.APPLICATION;
     }
 }
