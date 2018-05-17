@@ -22,11 +22,11 @@ public class AssistGestureHelper {
     private GestureListener mGestureListener;
     private PowerManager mPowerManager;
     private IElmyraService mService;
-    private final ServiceConnection mServiceConnection = new C10261();
+    private final ServiceConnection mServiceConnection = new IElmyraServiceSettingsListener();
     private IBinder mToken = new Binder();
 
-    class C10261 implements ServiceConnection {
-        C10261() {
+    class IElmyraServiceSettingsListener implements ServiceConnection {
+        IElmyraServiceSettingsListener() {
         }
 
         public void onServiceConnected(ComponentName componentName, IBinder iBinder) {
@@ -72,7 +72,7 @@ public class AssistGestureHelper {
 
     public AssistGestureHelper(Context context) {
         this.mContext = context;
-        this.mPowerManager = (PowerManager) context.getSystemService("power");
+        this.mPowerManager = (PowerManager) context.getSystemService(context.POWER_SERVICE);
     }
 
     public void bindToElmyraServiceProxy() {
