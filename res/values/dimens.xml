@@ -307,4 +307,9 @@
     <dimen name="suggestion_condition_header_padding_collapsed">10dp</dimen>
     <dimen name="suggestion_condition_header_padding_expanded">5dp</dimen>
 
+
+    <dimen name="assist_illustration_layout_height">240.0dip</dimen>
+    <dimen name="assist_illustration_layout_width">240.0dip</dimen>
+    <dimen name="assist_error_distance_top">24.0dip</dimen>
+
 </resources>
