@@ -21,7 +21,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class AssistGestureFeatureProviderGoogleImpl extends AssistGestureFeatureProviderImpl {
-    private static boolean hasAssistGestureSensor(Context context) {
+
+
+ private static boolean hasAssistGestureSensor(Context context) {
+      return context.getPackageManager().hasSystemFeature("android.hardware.sensor.assist");
+    }
+
+/*
+ private static boolean hasAssistGestureSensor(Context context) {
     String string = "com.google.sensor.elmyra.sensor";
         for (Sensor stringType : ((SensorManager) context.getSystemService(Context.SENSOR_SERVICE)).getSensorList(-1)) {
             if (stringType.getStringType().equals(string)) {
@@ -30,6 +37,7 @@ public class AssistGestureFeatureProviderGoogleImpl extends AssistGestureFeature
         }
         return false;
     }
+*/
 
     private static boolean isGsaCurrentAssistant(Context context) {
         ComponentName assistComponentForUser = new AssistUtils(context).getAssistComponentForUser(UserHandle.myUserId());
@@ -41,9 +49,9 @@ public class AssistGestureFeatureProviderGoogleImpl extends AssistGestureFeature
     }
 
     public static boolean isOpaEnabled(Context context) {
-        boolean z = false;
+       Boolean GoogleSucks = false;
         try {
-            z = Stub.asInterface(ServiceManager.getService("lock_settings")).getBoolean("systemui.google.opa_user_enabled", false, -2);
+            GoogleSucks = ILockSettings.Stub.asInterface(ServiceManager.getService("lock_settings")).getBoolean("systemui.google.opa_user_enabled", false, -2);
         } catch (Throwable e) {
             Log.e("AssistGestureFeatureProviderGoogleImpl", "isOpaEnabled RemoteException", e);
         }
