@@ -29,7 +29,7 @@ import com.android.settingslib.core.lifecycle.LifecycleObserver;
 import com.android.settingslib.core.lifecycle.events.OnPause;
 import com.android.settingslib.core.lifecycle.events.OnResume;
 import com.google.android.settings.gestures.assist.AssistGestureHelper.GestureListener;
-// import com.google.android.settings.gestures.assist.bubble.AssistGestureBubbleActivity;
+import com.google.android.settings.gestures.assist.bubble.AssistGestureBubbleActivity;
 
 public class AssistGestureSensitivityPreferenceController extends AbstractPreferenceController implements PreferenceControllerMixin, OnPreferenceChangeListener, LifecycleObserver, OnPause, OnResume {
     private AssistGestureHelper mAssistGestureHelper;
@@ -183,7 +183,7 @@ public class AssistGestureSensitivityPreferenceController extends AbstractPrefer
         if (this.mHits[0] < SystemClock.uptimeMillis() - 500) {
             return false;
         }
-   /*     if (!this.mUserManager.hasUserRestriction("no_fun")) {
+        if (!this.mUserManager.hasUserRestriction("no_fun")) {
             Intent intent = new Intent(this.mContext, AssistGestureBubbleActivity.class);
             try {
                 this.mContext.startActivity(intent);
@@ -192,8 +192,7 @@ public class AssistGestureSensitivityPreferenceController extends AbstractPrefer
                 Log.e("AssistGestureSensitivityPreferenceController", "Unable to start activity " + intent.toString());
                 return false;
             }
-        } else */
-      if (this.mFunDisallowedAdmin == null) {
+        } else if (this.mFunDisallowedAdmin == null) {
             return false;
         } else {
             RestrictedLockUtils.sendShowAdminSupportDetailsIntent(this.mContext, this.mFunDisallowedAdmin);

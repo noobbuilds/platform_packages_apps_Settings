@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    style="@style/SuwGlifButtonBar"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content">
+
+    <Button
+        android:id="@android:id/button1"
+        style="@style/SuwGlifButton.Secondary"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="start|center"
+        android:text="@string/assist_gesture_enrollment_do_it_later" />
+
+    <Button
+        android:id="@android:id/button2"
+        style="@style/SuwGlifButton.Primary"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end|center"
+        android:text="@string/suw_next_button_label" />
+</FrameLayout>
