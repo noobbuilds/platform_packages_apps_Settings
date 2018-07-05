@@ -35,7 +35,7 @@
     <item type="id" name="content_container">false</item>
     <item type="id" name="header_content_container">false</item>
     <item type="id" name="current_score">false</item>
-    <item type="id" name="play_view">false</item>d
+    <item type="id" name="play_view">false</item>
     <item type="id" name="game_view">false</item>
     <item type="id" name="assist_gesture_training_check">false</item>
     <item type="id" name="summary_text">false</item>
