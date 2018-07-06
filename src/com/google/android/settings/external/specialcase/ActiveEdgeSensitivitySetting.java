@@ -24,7 +24,7 @@ public class ActiveEdgeSensitivitySetting implements Queryable {
         return 0;
     }
 
-    private String getScreenTitle(Context context) {
+    private String getScreenTitle() {
         return "Squeeze sensitivity";
     }
 
@@ -50,7 +50,7 @@ public class ActiveEdgeSensitivitySetting implements Queryable {
 
     public Cursor getAccessCursor(Context context) {
         int sensitivityInt = AssistGestureSensitivityPreferenceController.getSensitivityInt(context);
-        String intentString = getIntentString(context, "assist_sensitivity", AssistGestureSettings.class, getScreenTitle(context));
+        String intentString = getIntentString(context, "assist_sensitivity", AssistGestureSettings.class, getScreenTitle());
         int iconResource = getIconResource();
         MatrixCursor matrixCursor = new MatrixCursor(ExternalSettingsContract.EXTERNAL_SETTINGS_QUERY_COLUMNS_WITH_SUPPORTED_VALUES);
         matrixCursor.newRow().add("existing_value", Integer.valueOf(sensitivityInt)).add("availability", Integer.valueOf(getAvailability(context))).add("intent", intentString).add("icon", Integer.valueOf(iconResource)).add("supported_values", getSupportedValues(context));
@@ -61,7 +61,7 @@ public class ActiveEdgeSensitivitySetting implements Queryable {
         validateInput(context, i);
         int sensitivityInt = AssistGestureSensitivityPreferenceController.getSensitivityInt(context);
         int availability = getAvailability(context);
-        String intentString = getIntentString(context, "assist_sensitivity", AssistGestureSettings.class, getScreenTitle(context));
+        String intentString = getIntentString(context, "assist_sensitivity", AssistGestureSettings.class, getScreenTitle());
         int iconResource = getIconResource();
         float convertSensitivityIntToFloat = AssistGestureSensitivityPreferenceController.convertSensitivityIntToFloat(context, i);
         if (!(shouldChangeValue(availability, sensitivityInt, i) && Secure.putFloat(context.getContentResolver(), "assist_gesture_sensitivity", convertSensitivityIntToFloat))) {
