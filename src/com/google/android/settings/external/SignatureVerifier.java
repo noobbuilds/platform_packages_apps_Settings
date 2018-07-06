@@ -1,13 +1,14 @@
 package com.google.android.settings.external;
 
-import android.content.Context;
-import android.content.pm.PackageInfo;
 import android.text.TextUtils;
-import android.util.Log;
-
 import com.android.internal.util.ArrayUtils;
-import com.android.settings.BuildConfig;
-
+import android.os.Build;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager.NameNotFoundException;
+import android.content.Context;
+import java.security.NoSuchAlgorithmException;
+import java.util.Arrays;
+import android.util.Log;
 import java.security.MessageDigest;
 import java.util.Arrays;
 
@@ -45,7 +46,7 @@ public class SignatureVerifier {
 
     private static boolean isSignatureWhitelisted(PackageInfo packageInfo) {
         if (packageInfo.signatures.length == 1) {
-            return isCertWhitelisted(packageInfo.signatures[0].toByteArray(), BuildConfig.DEBUG);
+            return isCertWhitelisted(packageInfo.signatures[0].toByteArray(), Build.IS_DEBUGGABLE);
         }
         Log.w("SignatureVerifier", "Package has more than one signature.");
         return false;
@@ -66,13 +67,14 @@ public class SignatureVerifier {
 
     public static String verifyCallerIsWhitelisted(Context context, int i) throws SecurityException {
         Object isUidWhitelisted = isUidWhitelisted(context, i);
-        if (!TextUtils.isEmpty(isUidWhitelisted)) {
-            return isUidWhitelisted;
+        if (!TextUtils.isEmpty((CharSequence) isUidWhitelisted)) {
+            return (String) isUidWhitelisted;
         }
         throw new SecurityException("UID is not Google Signed");
     }
 
     private static boolean verifyWhitelistedPackage(String str) {
-        return ("com.google.android.googlequicksearchbox".equals(str) || "com.google.android.gms".equals(str)) ? true : BuildConfig.DEBUG ? "com.google.android.settings.api.tester".equals(str) : false;
+        return ("com.google.android.googlequicksearchbox".equals(str) || "com.google.android.gms".equals(str)) ? true : Build.IS_DEBUGGABLE ? "com.google.android.settings.api.tester".equals(str) : false;
     }
 }
+

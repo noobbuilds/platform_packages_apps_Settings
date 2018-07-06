@@ -1,6 +1,7 @@
 package com.google.android.settings.external;
 
 import android.content.Intent;
+/*
 import com.google.android.settings.external.specialcase.WifiSetting;
 import com.google.android.settings.external.specialcase.TakeMeThereSetting;
 import com.google.android.settings.external.specialcase.AccessibilitySetting;
@@ -26,6 +27,7 @@ import com.google.android.settings.external.specialcase.BluetoothSetting;
 import com.google.android.settings.external.specialcase.AutoRotateSetting;
 import com.google.android.settings.external.specialcase.AmbientDisplayAlwaysOnSetting;
 import com.google.android.settings.external.specialcase.AirplaneModeSetting;
+*/
 import com.google.android.settings.external.specialcase.ActiveEdgeSetting;
 import com.google.android.settings.external.specialcase.ActiveEdgeSensitivitySetting;
 
@@ -33,6 +35,7 @@ public class InlineSettings
 {
     public static final ActiveEdgeSensitivitySetting ACTIVE_EDGE_SENSITIVITY_SETTING;
     public static final ActiveEdgeSetting ACTIVE_EDGE_SETTING;
+/*
     public static final AirplaneModeSetting AIRPLANE_MODE_SETTING;
     public static final AmbientDisplayAlwaysOnSetting AMBIENT_DISPLAY_ALWAYS_ON_SETTING;
     public static final AutoRotateSetting AUTO_ROTATE_SETTING;
@@ -60,10 +63,11 @@ public class InlineSettings
     public static final TakeMeThereSetting SYSTEM_UPDATE_SETTING;
     public static final AccessibilitySetting TALKBACK_SETTING;
     public static final WifiSetting WIFI_SETTING;
-    
+*/
     static {
         ACTIVE_EDGE_SETTING = new ActiveEdgeSetting();
         ACTIVE_EDGE_SENSITIVITY_SETTING = new ActiveEdgeSensitivitySetting();
+/*
         AIRPLANE_MODE_SETTING = new AirplaneModeSetting();
         AMBIENT_DISPLAY_ALWAYS_ON_SETTING = new AmbientDisplayAlwaysOnSetting();
         AUTO_ROTATE_SETTING = new AutoRotateSetting();
@@ -91,5 +95,6 @@ public class InlineSettings
         WIFI_SETTING = new WifiSetting();
         MAGNIFY_GESTURE_SETTING = new MagnificationSetting("magnify_gesture", "accessibility_display_magnification_enabled");
         MAGNIFY_NAVBAR_SETTING = new MagnificationSetting("magnify_navbar", "accessibility_display_magnification_navbar_enabled");
+*/
     }
 }

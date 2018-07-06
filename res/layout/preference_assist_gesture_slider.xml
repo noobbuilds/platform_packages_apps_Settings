@@ -22,7 +22,7 @@
         android:textColor="?android:textColorPrimary" />
 
     <SeekBar
-        android:id="@android:id/bottom_divider"
+        android:id="@*android:id/runtime"
         style="@android:style/Widget.Material.SeekBar.Discrete"
         android:layout_width="fill_parent"
         android:layout_height="70.0dip"
@@ -34,7 +34,7 @@
     <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/bottom_divider"
+        android:layout_below="@*android:id/runtime"
         android:orientation="horizontal"
         android:paddingBottom="8.0dip">
 

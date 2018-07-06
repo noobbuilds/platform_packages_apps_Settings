@@ -11,13 +11,15 @@ import android.support.annotation.VisibleForTesting;
 import com.android.settings.Utils;
 import com.android.settings.core.instrumentation.SharedPreferencesLogger;
 import com.android.settings.overlay.FeatureFactory;
-import com.android.settings.search.CursorToSearchResultConverter;
 import com.android.settings.search.IndexDatabaseHelper;
 import com.android.settings.search.InlinePayload;
 
+import java.io.Serializable;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
+
+import static com.android.settings.search.CursorToSearchResultConverter.getUnmarshalledPayload;
 
 public class ExternalSettingsManager {
   public static final Set<?> SPECIAL_SETTINGS;
@@ -28,34 +30,53 @@ public class ExternalSettingsManager {
     final HashSet<String> set = new HashSet<String>();
     set.add("gesture_assist");
     set.add("assist_sensitivity");
-    set.add("toggle_airplane");
-    set.add("ambient_display_always_on");
-    set.add("toggle_lock_screen_rotation_preference");
-    set.add("bluetooth_toggle_key");
-    set.add("color_inversion");
-    set.add("data_saver");
-    set.add("screen_timeout");
-    set.add("zen_mode");
-    set.add("gesture_double_twist");
-    set.add("font_size");
-    set.add("enable_wifi_ap");
-    set.add("location");
-    set.add("location_mode");
-    set.add("magnify_gesture");
-    set.add("magnify_navbar");
-    set.add("mobile_data");
-    set.add("nfc");
-    set.add("night_display");
-    set.add("night_display_temperature");
-    set.add("gesture_pick_up");
-    set.add("preferred_network_type");
-    set.add("screen_zoom");
-    set.add("swipe_to_notification");
-    set.add("switch_access");
-    set.add("system_update");
-    set.add("talkback");
-    set.add("master_wifi_toggle");
+    /*
+        set.add("toggle_airplane");
+        set.add("ambient_display_always_on");
+        set.add("toggle_lock_screen_rotation_preference");
+        set.add("bluetooth_toggle_key");
+        set.add("color_inversion");
+        set.add("data_saver");
+        set.add("screen_timeout");
+        set.add("zen_mode");
+        set.add("gesture_double_twist");
+        set.add("font_size");
+        set.add("enable_wifi_ap");
+        set.add("location");
+        set.add("location_mode");
+        set.add("magnify_gesture");
+        set.add("magnify_navbar");
+        set.add("mobile_data");
+        set.add("nfc");
+        set.add("night_display");
+        set.add("night_display_temperature");
+        set.add("gesture_pick_up");
+        set.add("preferred_network_type");
+        set.add("screen_zoom");
+        set.add("swipe_to_notification");
+        set.add("switch_access");
+        set.add("system_update");
+        set.add("talkback");
+        set.add("master_wifi_toggle");
+    */
     SPECIAL_SETTINGS = Collections.unmodifiableSet((Set<?>) set);
+  }
+
+  private static void closeResource(Throwable t, AutoCloseable autoCloseable) {
+    if (t != null) {
+      try {
+        autoCloseable.close();
+        return;
+      } catch (Throwable t2) {
+        t.addSuppressed(t2);
+        return;
+      }
+    }
+    try {
+      autoCloseable.close();
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
   }
 
   public static String buildTrampolineIntentString(
@@ -74,60 +95,62 @@ public class ExternalSettingsManager {
       cursor = InlineSettings.ACTIVE_EDGE_SETTING.getAccessCursor(context);
     } else if (s2.equals("assist_sensitivity")) {
       cursor = InlineSettings.ACTIVE_EDGE_SENSITIVITY_SETTING.getAccessCursor(context);
-    } else if (s2.equals("toggle_airplane")) {
-      cursor = InlineSettings.AIRPLANE_MODE_SETTING.getAccessCursor(context);
-    } else if (s2.equals("ambient_display_always_on")) {
-      cursor = InlineSettings.AMBIENT_DISPLAY_ALWAYS_ON_SETTING.getAccessCursor(context);
-    } else if (s2.equals("toggle_lock_screen_rotation_preference")) {
-      cursor = InlineSettings.AUTO_ROTATE_SETTING.getAccessCursor(context);
-    } else if (s2.equals("bluetooth_toggle_key")) {
-      cursor = InlineSettings.BLUETOOTH_SETTING.getAccessCursor(context);
-    } else if (s2.equals("color_inversion")) {
-      cursor = InlineSettings.COLOR_INVERSION_SETTING.getAccessCursor(context);
-    } else if (s2.equals("data_saver")) {
-      cursor = InlineSettings.DATA_SAVER_SETTING.getAccessCursor(context);
-    } else if (s2.equals("screen_timeout")) {
-      cursor = InlineSettings.DISPLAY_TIMEOUT_SETTING.getAccessCursor(context);
-    } else if (s2.equals("zen_mode")) {
-      cursor = InlineSettings.DO_NOT_DISTURB_SETTING.getAccessCursor(context);
-    } else if (s2.equals("gesture_double_twist")) {
-      cursor = InlineSettings.DOUBLE_TWIST_GESTURE_SETTING.getAccessCursor(context);
-    } else if (s2.equals("font_size")) {
-      cursor = InlineSettings.FONT_SIZE_SETTING.getAccessCursor(context);
-    } else if (s2.equals("enable_wifi_ap")) {
-      cursor = InlineSettings.HOTSPOT_SETTING.getAccessCursor(context);
-    } else if (s2.equals("location")) {
-      cursor = InlineSettings.LOCATION_SETTING.getAccessCursor(context);
-    } else if (s2.equals("location_mode")) {
-      cursor = InlineSettings.LOCATION_MODE_SETTING.getAccessCursor(context);
-    } else if (s2.equals("magnify_gesture")) {
-      cursor = InlineSettings.MAGNIFY_GESTURE_SETTING.getAccessCursor(context);
-    } else if (s2.equals("magnify_navbar")) {
-      cursor = InlineSettings.MAGNIFY_NAVBAR_SETTING.getAccessCursor(context);
-    } else if (s2.equals("mobile_data")) {
-      cursor = InlineSettings.MOBILE_DATA_SETTING.getAccessCursor(context);
-    } else if (s2.equals("nfc")) {
-      cursor = InlineSettings.NFC_SETTING.getAccessCursor(context);
-    } else if (s2.equals("night_display")) {
-      cursor = InlineSettings.NIGHTDISPLAY_SETTING.getAccessCursor(context);
-    } else if (s2.equals("night_display_temperature")) {
-      cursor = InlineSettings.NIGHTDISPLAY_INTENSITY_SETTING.getAccessCursor(context);
-    } else if (s2.equals("gesture_pick_up")) {
-      cursor = InlineSettings.PICKUP_GESTURE_SETTING.getAccessCursor(context);
-    } else if (s2.equals("screen_zoom")) {
-      cursor = InlineSettings.SCREEN_ZOOM_SETTING.getAccessCursor(context);
-    } else if (s2.equals("swipe_to_notification")) {
-      cursor = InlineSettings.SWIPE_TO_NOTIFICATION_SETTING.getAccessCursor(context);
-    } else if (s2.equals("switch_access")) {
-      cursor = InlineSettings.SWITCH_ACCESS_SETTING.getAccessCursor(context);
-    } else if (s2.equals("system_update")) {
-      cursor = InlineSettings.SYSTEM_UPDATE_SETTING.getAccessCursor(context);
-    } else if (s2.equals("talkback")) {
-      cursor = InlineSettings.TALKBACK_SETTING.getAccessCursor(context);
-    } else if (s2.equals("master_wifi_toggle")) {
-      cursor = InlineSettings.WIFI_SETTING.getAccessCursor(context);
-    } else if (s2.equals("preferred_network_type")) {
-      cursor = InlineSettings.MOBILE_NETWORK_SETTINGS.getAccessCursor(context);
+      /*
+          } else if (s2.equals("toggle_airplane")) {
+            cursor = InlineSettings.AIRPLANE_MODE_SETTING.getAccessCursor(context);
+          } else if (s2.equals("ambient_display_always_on")) {
+            cursor = InlineSettings.AMBIENT_DISPLAY_ALWAYS_ON_SETTING.getAccessCursor(context);
+          } else if (s2.equals("toggle_lock_screen_rotation_preference")) {
+            cursor = InlineSettings.AUTO_ROTATE_SETTING.getAccessCursor(context);
+          } else if (s2.equals("bluetooth_toggle_key")) {
+            cursor = InlineSettings.BLUETOOTH_SETTING.getAccessCursor(context);
+          } else if (s2.equals("color_inversion")) {
+            cursor = InlineSettings.COLOR_INVERSION_SETTING.getAccessCursor(context);
+          } else if (s2.equals("data_saver")) {
+            cursor = InlineSettings.DATA_SAVER_SETTING.getAccessCursor(context);
+          } else if (s2.equals("screen_timeout")) {
+            cursor = InlineSettings.DISPLAY_TIMEOUT_SETTING.getAccessCursor(context);
+          } else if (s2.equals("zen_mode")) {
+            cursor = InlineSettings.DO_NOT_DISTURB_SETTING.getAccessCursor(context);
+          } else if (s2.equals("gesture_double_twist")) {
+            cursor = InlineSettings.DOUBLE_TWIST_GESTURE_SETTING.getAccessCursor(context);
+          } else if (s2.equals("font_size")) {
+            cursor = InlineSettings.FONT_SIZE_SETTING.getAccessCursor(context);
+          } else if (s2.equals("enable_wifi_ap")) {
+            cursor = InlineSettings.HOTSPOT_SETTING.getAccessCursor(context);
+          } else if (s2.equals("location")) {
+            cursor = InlineSettings.LOCATION_SETTING.getAccessCursor(context);
+          } else if (s2.equals("location_mode")) {
+            cursor = InlineSettings.LOCATION_MODE_SETTING.getAccessCursor(context);
+          } else if (s2.equals("magnify_gesture")) {
+            cursor = InlineSettings.MAGNIFY_GESTURE_SETTING.getAccessCursor(context);
+          } else if (s2.equals("magnify_navbar")) {
+            cursor = InlineSettings.MAGNIFY_NAVBAR_SETTING.getAccessCursor(context);
+          } else if (s2.equals("mobile_data")) {
+            cursor = InlineSettings.MOBILE_DATA_SETTING.getAccessCursor(context);
+          } else if (s2.equals("nfc")) {
+            cursor = InlineSettings.NFC_SETTING.getAccessCursor(context);
+          } else if (s2.equals("night_display")) {
+            cursor = InlineSettings.NIGHTDISPLAY_SETTING.getAccessCursor(context);
+          } else if (s2.equals("night_display_temperature")) {
+            cursor = InlineSettings.NIGHTDISPLAY_INTENSITY_SETTING.getAccessCursor(context);
+          } else if (s2.equals("gesture_pick_up")) {
+            cursor = InlineSettings.PICKUP_GESTURE_SETTING.getAccessCursor(context);
+          } else if (s2.equals("screen_zoom")) {
+            cursor = InlineSettings.SCREEN_ZOOM_SETTING.getAccessCursor(context);
+          } else if (s2.equals("swipe_to_notification")) {
+            cursor = InlineSettings.SWIPE_TO_NOTIFICATION_SETTING.getAccessCursor(context);
+          } else if (s2.equals("switch_access")) {
+            cursor = InlineSettings.SWITCH_ACCESS_SETTING.getAccessCursor(context);
+          } else if (s2.equals("system_update")) {
+            cursor = InlineSettings.SYSTEM_UPDATE_SETTING.getAccessCursor(context);
+          } else if (s2.equals("talkback")) {
+            cursor = InlineSettings.TALKBACK_SETTING.getAccessCursor(context);
+          } else if (s2.equals("master_wifi_toggle")) {
+            cursor = InlineSettings.WIFI_SETTING.getAccessCursor(context);
+          } else if (s2.equals("preferred_network_type")) {
+            cursor = InlineSettings.MOBILE_NETWORK_SETTINGS.getAccessCursor(context);
+      */
     }
     if (cursor != null && cursor.moveToFirst()) {
       final int columnIndex = cursor.getColumnIndex("existing_value");
@@ -140,118 +163,83 @@ public class ExternalSettingsManager {
       logAccessSetting(context, s, s2, int1);
       return cursor;
     }
-    throw new IllegalArgumentException("Invalid access special case key: " + s2);
+    final StringBuilder sb = new StringBuilder();
+    sb.append("Invalid access special case key: ");
+    sb.append(s2);
+    throw new IllegalArgumentException(sb.toString());
   }
 
-  public static Cursor getAccessCursorFromPayload(Context context, String str, String str2) {
-    Cursor cursorFromUriKey;
-    Throwable th;
-    Throwable th2;
-    Throwable th3 = null;
+  public static Cursor getAccessCursorFromPayload(Context context, String s, String s2) {
+    final Cursor cursorFromUriKey = getCursorFromUriKey(context, s2);
+    Serializable buildTrampolineIntentString;
+    final Serializable s3 = buildTrampolineIntentString = null;
     try {
-      cursorFromUriKey = getCursorFromUriKey(context, str2);
       try {
-        String string = cursorFromUriKey.getString(cursorFromUriKey.getColumnIndex("class_name"));
-        int i = cursorFromUriKey.getInt(cursorFromUriKey.getColumnIndex("payload_type"));
-        byte[] blob = cursorFromUriKey.getBlob(cursorFromUriKey.getColumnIndex("payload"));
-        int i2 = cursorFromUriKey.getInt(cursorFromUriKey.getColumnIndex("icon"));
-        String string2 =
+        final String string =
+            cursorFromUriKey.getString(cursorFromUriKey.getColumnIndex("class_name"));
+        buildTrampolineIntentString = s3;
+        final int int1 = cursorFromUriKey.getInt(cursorFromUriKey.getColumnIndex("payload_type"));
+        buildTrampolineIntentString = s3;
+        final byte[] blob = cursorFromUriKey.getBlob(cursorFromUriKey.getColumnIndex("payload"));
+        buildTrampolineIntentString = s3;
+        final int int2 = cursorFromUriKey.getInt(cursorFromUriKey.getColumnIndex("icon"));
+        buildTrampolineIntentString = s3;
+        final String string2 =
             cursorFromUriKey.getString(cursorFromUriKey.getColumnIndex("screen_title"));
         if (cursorFromUriKey != null) {
-          try {
-            cursorFromUriKey.close();
-          } catch (Throwable th4) {
-            th3 = th4;
-          }
+          closeResource(null, (AutoCloseable) cursorFromUriKey);
         }
-        if (th3 != null) {
-          throw th3;
+        int value = -1;
+        int availability = 5;
+        buildTrampolineIntentString = buildTrampolineIntentString(context, string, s2, string2);
+        if (int1 != 0) {
+          final InlinePayload inlinePayload = (InlinePayload) getUnmarshalledPayload(blob, int1);
+          value = inlinePayload.getValue(context);
+          availability = inlinePayload.getAvailability();
         }
-        int i3 = -1;
-        int i4 = 5;
-        String buildTrampolineIntentString =
-            buildTrampolineIntentString(context, str2, string, string2);
-        if (i != 0) {
-          InlinePayload inlinePayload =
-              (InlinePayload) CursorToSearchResultConverter.getUnmarshalledPayload(blob, i);
-          i3 = inlinePayload.getValue(context);
-          i4 = inlinePayload.getAvailability();
-        }
-        Cursor matrixCursor =
+        final MatrixCursor matrixCursor =
             new MatrixCursor(ExternalSettingsContract.EXTERNAL_SETTINGS_QUERY_COLUMNS);
         matrixCursor
             .newRow()
-            .add("existing_value", Integer.valueOf(i3))
-            .add("availability", Integer.valueOf(i4))
-            .add("intent", buildTrampolineIntentString)
-            .add("icon", Integer.valueOf(i2));
-        logAccessSetting(context, str, str2, i3);
-        return matrixCursor;
-      } catch (Throwable th5) {
-        th = th5;
-        th2 = th;
-        th = null;
-        th3 = th2;
+            .add("existing_value", (Object) value)
+            .add("availability", (Object) availability)
+            .add("intent", (Object) buildTrampolineIntentString)
+            .add("icon", (Object) int2);
+        logAccessSetting(context, s, s2, value);
+        return (Cursor) matrixCursor;
+      } finally {
         if (cursorFromUriKey != null) {
-          try {
-            cursorFromUriKey.close();
-          } catch (Throwable th6) {
-            if (th == null) {
-              th = th6;
-            } else if (th != th6) {
-              th.addSuppressed(th6);
-            }
-          }
-        }
-        if (th == null) {
-          throw th;
-        }
-        throw th3;
-      }
-    } catch (Throwable th7) {
-      th = th7;
-      cursorFromUriKey = null;
-      th2 = th;
-      th = null;
-      th3 = th2;
-      if (cursorFromUriKey != null) {
-        cursorFromUriKey.close();
-      }
-      if (th == null) {
-        try {
-          throw th3;
-        } catch (Throwable throwable) {
-          throwable.printStackTrace();
+          closeResource((Throwable) buildTrampolineIntentString, (AutoCloseable) cursorFromUriKey);
         }
       }
-      try {
-        throw th;
-      } catch (Throwable throwable) {
-        throwable.printStackTrace();
-      }
+    } finally {
+
     }
   }
 
-  public static Cursor getCursorFromUriKey(Context context, String str) {
+  public static Cursor getCursorFromUriKey(Context context, String s) {
     verifyIndexing(context);
     Cursor query =
         IndexDatabaseHelper.getInstance(context)
             .getReadableDatabase()
             .query(
                 "prefs_index",
-                SELECT_COLUMNS,
+                ExternalSettingsManager.SELECT_COLUMNS,
                 "data_key_reference like ? ",
-                new String[] {str},
-                null,
-                null,
-                null);
-    if (query.getCount() != 1 || (query.moveToFirst() ^ true)) {
-      throw new IllegalArgumentException("Key not found: " + str);
+                new String[] {s},
+                (String) null,
+                (String) null,
+                (String) null);
+    if (query.getCount() == 1 && query.moveToFirst()) {
+      return query;
     }
-    return query;
+    StringBuilder sb = new StringBuilder();
+    sb.append("Key not found: ");
+    sb.append(s);
+    throw new IllegalArgumentException(sb.toString());
   }
 
-  public static String getNewSettingValueQueryParameter(Uri uri) {
+  public static String getNewSettingValueQueryParameter(final Uri uri) {
     return uri.getQueryParameter("new_setting_value");
   }
 
@@ -262,60 +250,62 @@ public class ExternalSettingsManager {
       cursor = InlineSettings.ACTIVE_EDGE_SETTING.getUpdateCursor(context, s3);
     } else if (s2.equals("assist_sensitivity")) {
       cursor = InlineSettings.ACTIVE_EDGE_SENSITIVITY_SETTING.getUpdateCursor(context, s3);
-    } else if (s2.equals("toggle_airplane")) {
-      cursor = InlineSettings.AIRPLANE_MODE_SETTING.getUpdateCursor(context, s3);
-    } else if (s2.equals("ambient_display_always_on")) {
-      cursor = InlineSettings.AMBIENT_DISPLAY_ALWAYS_ON_SETTING.getUpdateCursor(context, s3);
-    } else if (s2.equals("toggle_lock_screen_rotation_preference")) {
-      cursor = InlineSettings.AUTO_ROTATE_SETTING.getUpdateCursor(context, s3);
-    } else if (s2.equals("bluetooth_toggle_key")) {
-      cursor = InlineSettings.BLUETOOTH_SETTING.getUpdateCursor(context, s3);
-    } else if (s2.equals("color_inversion")) {
-      cursor = InlineSettings.COLOR_INVERSION_SETTING.getUpdateCursor(context, s3);
-    } else if (s2.equals("data_saver")) {
-      cursor = InlineSettings.DATA_SAVER_SETTING.getUpdateCursor(context, s3);
-    } else if (s2.equals("screen_timeout")) {
-      cursor = InlineSettings.DISPLAY_TIMEOUT_SETTING.getUpdateCursor(context, s3);
-    } else if (s2.equals("zen_mode")) {
-      cursor = InlineSettings.DO_NOT_DISTURB_SETTING.getUpdateCursor(context, s3);
-    } else if (s2.equals("gesture_double_twist")) {
-      cursor = InlineSettings.DOUBLE_TWIST_GESTURE_SETTING.getUpdateCursor(context, s3);
-    } else if (s2.equals("font_size")) {
-      cursor = InlineSettings.FONT_SIZE_SETTING.getUpdateCursor(context, s3);
-    } else if (s2.equals("enable_wifi_ap")) {
-      cursor = InlineSettings.HOTSPOT_SETTING.getUpdateCursor(context, s3);
-    } else if (s2.equals("location")) {
-      cursor = InlineSettings.LOCATION_SETTING.getUpdateCursor(context, s3);
-    } else if (s2.equals("location_mode")) {
-      cursor = InlineSettings.LOCATION_MODE_SETTING.getUpdateCursor(context, s3);
-    } else if (s2.equals("magnify_gesture")) {
-      cursor = InlineSettings.MAGNIFY_GESTURE_SETTING.getUpdateCursor(context, s3);
-    } else if (s2.equals("magnify_navbar")) {
-      cursor = InlineSettings.MAGNIFY_NAVBAR_SETTING.getUpdateCursor(context, s3);
-    } else if (s2.equals("mobile_data")) {
-      cursor = InlineSettings.MOBILE_DATA_SETTING.getUpdateCursor(context, s3);
-    } else if (s2.equals("nfc")) {
-      cursor = InlineSettings.NFC_SETTING.getUpdateCursor(context, s3);
-    } else if (s2.equals("night_display")) {
-      cursor = InlineSettings.NIGHTDISPLAY_SETTING.getUpdateCursor(context, s3);
-    } else if (s2.equals("night_display_temperature")) {
-      cursor = InlineSettings.NIGHTDISPLAY_INTENSITY_SETTING.getUpdateCursor(context, s3);
-    } else if (s2.equals("gesture_pick_up")) {
-      cursor = InlineSettings.PICKUP_GESTURE_SETTING.getUpdateCursor(context, s3);
-    } else if (s2.equals("screen_zoom")) {
-      cursor = InlineSettings.SCREEN_ZOOM_SETTING.getUpdateCursor(context, s3);
-    } else if (s2.equals("swipe_to_notification")) {
-      cursor = InlineSettings.SWIPE_TO_NOTIFICATION_SETTING.getUpdateCursor(context, s3);
-    } else if (s2.equals("switch_access")) {
-      cursor = InlineSettings.SWITCH_ACCESS_SETTING.getUpdateCursor(context, s3);
-    } else if (s2.equals("system_update")) {
-      cursor = InlineSettings.SYSTEM_UPDATE_SETTING.getUpdateCursor(context, s3);
-    } else if (s2.equals("talkback")) {
-      cursor = InlineSettings.TALKBACK_SETTING.getUpdateCursor(context, s3);
-    } else if (s2.equals("master_wifi_toggle")) {
-      cursor = InlineSettings.WIFI_SETTING.getUpdateCursor(context, s3);
-    } else if (s2.equals("preferred_network_type")) {
-      cursor = InlineSettings.MOBILE_NETWORK_SETTINGS.getUpdateCursor(context, s3);
+      /*
+          } else if (s2.equals("toggle_airplane")) {
+            cursor = InlineSettings.AIRPLANE_MODE_SETTING.getUpdateCursor(context, s3);
+          } else if (s2.equals("ambient_display_always_on")) {
+            cursor = InlineSettings.AMBIENT_DISPLAY_ALWAYS_ON_SETTING.getUpdateCursor(context, s3);
+          } else if (s2.equals("toggle_lock_screen_rotation_preference")) {
+            cursor = InlineSettings.AUTO_ROTATE_SETTING.getUpdateCursor(context, s3);
+          } else if (s2.equals("bluetooth_toggle_key")) {
+            cursor = InlineSettings.BLUETOOTH_SETTING.getUpdateCursor(context, s3);
+          } else if (s2.equals("color_inversion")) {
+            cursor = InlineSettings.COLOR_INVERSION_SETTING.getUpdateCursor(context, s3);
+          } else if (s2.equals("data_saver")) {
+            cursor = InlineSettings.DATA_SAVER_SETTING.getUpdateCursor(context, s3);
+          } else if (s2.equals("screen_timeout")) {
+            cursor = InlineSettings.DISPLAY_TIMEOUT_SETTING.getUpdateCursor(context, s3);
+          } else if (s2.equals("zen_mode")) {
+            cursor = InlineSettings.DO_NOT_DISTURB_SETTING.getUpdateCursor(context, s3);
+          } else if (s2.equals("gesture_double_twist")) {
+            cursor = InlineSettings.DOUBLE_TWIST_GESTURE_SETTING.getUpdateCursor(context, s3);
+          } else if (s2.equals("font_size")) {
+            cursor = InlineSettings.FONT_SIZE_SETTING.getUpdateCursor(context, s3);
+          } else if (s2.equals("enable_wifi_ap")) {
+            cursor = InlineSettings.HOTSPOT_SETTING.getUpdateCursor(context, s3);
+          } else if (s2.equals("location")) {
+            cursor = InlineSettings.LOCATION_SETTING.getUpdateCursor(context, s3);
+          } else if (s2.equals("location_mode")) {
+            cursor = InlineSettings.LOCATION_MODE_SETTING.getUpdateCursor(context, s3);
+          } else if (s2.equals("magnify_gesture")) {
+            cursor = InlineSettings.MAGNIFY_GESTURE_SETTING.getUpdateCursor(context, s3);
+          } else if (s2.equals("magnify_navbar")) {
+            cursor = InlineSettings.MAGNIFY_NAVBAR_SETTING.getUpdateCursor(context, s3);
+          } else if (s2.equals("mobile_data")) {
+            cursor = InlineSettings.MOBILE_DATA_SETTING.getUpdateCursor(context, s3);
+          } else if (s2.equals("nfc")) {
+            cursor = InlineSettings.NFC_SETTING.getUpdateCursor(context, s3);
+          } else if (s2.equals("night_display")) {
+            cursor = InlineSettings.NIGHTDISPLAY_SETTING.getUpdateCursor(context, s3);
+          } else if (s2.equals("night_display_temperature")) {
+            cursor = InlineSettings.NIGHTDISPLAY_INTENSITY_SETTING.getUpdateCursor(context, s3);
+          } else if (s2.equals("gesture_pick_up")) {
+            cursor = InlineSettings.PICKUP_GESTURE_SETTING.getUpdateCursor(context, s3);
+          } else if (s2.equals("screen_zoom")) {
+            cursor = InlineSettings.SCREEN_ZOOM_SETTING.getUpdateCursor(context, s3);
+          } else if (s2.equals("swipe_to_notification")) {
+            cursor = InlineSettings.SWIPE_TO_NOTIFICATION_SETTING.getUpdateCursor(context, s3);
+          } else if (s2.equals("switch_access")) {
+            cursor = InlineSettings.SWITCH_ACCESS_SETTING.getUpdateCursor(context, s3);
+          } else if (s2.equals("system_update")) {
+            cursor = InlineSettings.SYSTEM_UPDATE_SETTING.getUpdateCursor(context, s3);
+          } else if (s2.equals("talkback")) {
+            cursor = InlineSettings.TALKBACK_SETTING.getUpdateCursor(context, s3);
+          } else if (s2.equals("master_wifi_toggle")) {
+            cursor = InlineSettings.WIFI_SETTING.getUpdateCursor(context, s3);
+          } else if (s2.equals("preferred_network_type")) {
+            cursor = InlineSettings.MOBILE_NETWORK_SETTINGS.getUpdateCursor(context, s3);
+      */
     }
     if (cursor != null && cursor.moveToFirst()) {
       final int columnIndex = cursor.getColumnIndex("newValue");
@@ -328,105 +318,68 @@ public class ExternalSettingsManager {
       logUpdateSetting(context, s, s2, int1);
       return cursor;
     }
-    throw new IllegalArgumentException("Invalid update special case key: " + s2);
+    final StringBuilder sb = new StringBuilder();
+    sb.append("Invalid update special case key: ");
+    sb.append(s2);
+    throw new IllegalArgumentException(sb.toString());
   }
 
   public static Cursor getUpdateCursorFromPayload(
-      Context context, String str, String str2, String str3) {
-    Throwable th;
-    Throwable th2;
-    Throwable th3 = null;
-    Cursor cursorFromUriKey;
+      final Context context, String t, final String s, final String s2) {
+    Object o = getCursorFromUriKey(context, s);
+    InlinePayload inlinePayload = null;
     try {
-      cursorFromUriKey = getCursorFromUriKey(context, str2);
-      try {
-        String string = cursorFromUriKey.getString(cursorFromUriKey.getColumnIndex("class_name"));
-        int i = cursorFromUriKey.getInt(cursorFromUriKey.getColumnIndex("payload_type"));
-        byte[] blob = cursorFromUriKey.getBlob(cursorFromUriKey.getColumnIndex("payload"));
-        int i2 = cursorFromUriKey.getInt(cursorFromUriKey.getColumnIndex("icon"));
-        String string2 =
-            cursorFromUriKey.getString(cursorFromUriKey.getColumnIndex("screen_title"));
-        if (cursorFromUriKey != null) {
-          try {
-            cursorFromUriKey.close();
-          } catch (Throwable th4) {
-            th3 = th4;
+      final String string = ((Cursor) o).getString(((Cursor) o).getColumnIndex("class_name"));
+      final int int1 = ((Cursor) o).getInt(((Cursor) o).getColumnIndex("payload_type"));
+      final byte[] blob = ((Cursor) o).getBlob(((Cursor) o).getColumnIndex("payload"));
+      final int int2 = ((Cursor) o).getInt(((Cursor) o).getColumnIndex("icon"));
+      final String string2 = ((Cursor) o).getString(((Cursor) o).getColumnIndex("screen_title"));
+      if (o != null) {
+        closeResource(null, (AutoCloseable) o);
+      }
+      if (int1 != 0) {
+        inlinePayload = (InlinePayload) getUnmarshalledPayload(blob, int1);
+        o = buildTrampolineIntentString(context, s, string, string2);
+        final int value = inlinePayload.getValue(context);
+        final int availability = inlinePayload.getAvailability();
+        final int n = value;
+        final int intValue = Integer.valueOf(s2);
+        int n2 = n;
+        if (availability == 0) {
+          n2 = n;
+          if (inlinePayload.setValue(context, intValue)) {
+            n2 = intValue;
           }
         }
-        if (th3 != null) {
-          throw th3;
-        } else if (i == 0) {
-          throw new IllegalArgumentException("No update support for settings key: " + str2);
-        } else {
-          InlinePayload inlinePayload =
-              (InlinePayload) CursorToSearchResultConverter.getUnmarshalledPayload(blob, i);
-          string = buildTrampolineIntentString(context, str2, string, string2);
-          int value = inlinePayload.getValue(context);
-          int availability = inlinePayload.getAvailability();
-          int intValue = Integer.valueOf(str3).intValue();
-          i = (availability == 0 && inlinePayload.setValue(context, intValue)) ? intValue : value;
-          cursorFromUriKey =
-              new MatrixCursor(ExternalSettingsContract.EXTERNAL_SETTINGS_UPDATE_COLUMNS);
-          cursorFromUriKey
-              .newRow()
-              .add("newValue", Integer.valueOf(i))
-              .add("existing_value", Integer.valueOf(value))
-              .add("availability", Integer.valueOf(availability))
-              .add("intent", string)
-              .add("icon", Integer.valueOf(i2));
-          logUpdateSetting(context, str, str2, i);
-          return cursorFromUriKey;
-        }
-      } catch (Throwable th5) {
-        th = th5;
-        th2 = th;
-        th = null;
-        th3 = th2;
-        if (cursorFromUriKey != null) {
-          try {
-            cursorFromUriKey.close();
-          } catch (Throwable th6) {
-            if (th == null) {
-              th = th6;
-            } else if (th != th6) {
-              th.addSuppressed(th6);
-            }
-          }
-        }
-        if (th == null) {
-          throw th;
-        }
-        throw th3;
+        final MatrixCursor matrixCursor =
+            new MatrixCursor(ExternalSettingsContract.EXTERNAL_SETTINGS_UPDATE_COLUMNS);
+        matrixCursor
+            .newRow()
+            .add("newValue", (Object) n2)
+            .add("existing_value", (Object) value)
+            .add("availability", (Object) availability)
+            .add("intent", o)
+            .add("icon", (Object) int2);
+        logUpdateSetting(context, (String) t, s, n2);
+        return (Cursor) matrixCursor;
       }
-    } catch (Throwable th7) {
-      th = th7;
-      cursorFromUriKey = null;
-      th2 = th;
-      th = null;
-      th3 = th2;
-      if (cursorFromUriKey != null) {
-        cursorFromUriKey.close();
-      }
-      if (th == null) {
-        try {
-          throw th3;
-        } catch (Throwable throwable) {
-          throwable.printStackTrace();
-        }
-      }
-      try {
-        throw th;
-      } catch (Throwable throwable) {
-        throwable.printStackTrace();
-      }
+      final StringBuilder sb = new StringBuilder();
+      sb.append("No update support for settings key: ");
+      sb.append(s);
+      throw new IllegalArgumentException(sb.toString());
+    } finally {
+
     }
   }
 
   private static void logAccessSetting(
       final Context context, String buildCountName, final String s, final int n) {
+    final StringBuilder sb = new StringBuilder();
+    sb.append(buildCountName);
+    sb.append("/access");
     buildCountName =
         SharedPreferencesLogger.buildCountName(
-            SharedPreferencesLogger.buildPrefKey(buildCountName + "/access", s), n);
+            SharedPreferencesLogger.buildPrefKey(sb.toString(), s), n);
     FeatureFactory.getFactory(context)
         .getMetricsFeatureProvider()
         .count(context, buildCountName, 1);
@@ -452,3 +405,4 @@ public class ExternalSettingsManager {
     }
   }
 }
+

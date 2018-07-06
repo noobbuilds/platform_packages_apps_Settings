@@ -82,7 +82,7 @@ public class AssistGestureSensitivityPreferenceController extends AbstractPrefer
 
   public static int getMaxSensitivityResourceInteger(Context context) {
     int maximum = 8;
-    maximum = context.getResources().getInteger(R.integer.gesture_assist_sensitivity_max);
+//    maximum = context.getResources().getInteger(R.integer.gesture_assist_sensitivity_max);
     return maximum;
   }
 

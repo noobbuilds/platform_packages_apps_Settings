@@ -3,6 +3,7 @@ package com.google.android.settings.external.specialcase;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.MatrixCursor;
+import android.provider.Settings;
 import android.provider.Settings.Secure;
 import com.android.settings.gestures.AssistGestureSettings;
 import com.android.settings.overlay.FeatureFactory;
@@ -34,6 +35,37 @@ public class ActiveEdgeSetting implements Queryable {
         }
     }
 
+    public Cursor getAccessCursor(final Context context) {
+        final int currentValue = this.getCurrentValue(context);
+        final int availability = this.getAvailability(context);
+        final int iconResource = this.getIconResource();
+        final String intentString = this.getIntentString(context, "gesture_assist", AssistGestureSettings.class, this.getScreenTitle(context));
+        final MatrixCursor matrixCursor = new MatrixCursor(ExternalSettingsContract.EXTERNAL_SETTINGS_QUERY_COLUMNS);
+        matrixCursor.newRow().add("existing_value", (Object)currentValue).add("availability", (Object)availability).add("intent", (Object)intentString).add("icon", (Object)iconResource);
+        return (Cursor)matrixCursor;
+    }
+
+    @Override
+    public Cursor getUpdateCursor(final Context context, final int n) {
+        this.validateInput(n);
+        final int currentValue = this.getCurrentValue(context);
+        final int availability = this.getAvailability(context);
+        final String intentString = this.getIntentString(context, "gesture_assist", AssistGestureSettings.class, this.getScreenTitle(context));
+        final int iconResource = this.getIconResource();
+        int n2 = currentValue;
+        if (this.shouldChangeValue(availability, currentValue, n)) {
+            n2 = n2;
+            if (Settings.Secure.putInt(context.getContentResolver(), "assist_gesture_enabled", n)) {
+                n2 = n;
+            }
+        }
+        final MatrixCursor matrixCursor = new MatrixCursor(ExternalSettingsContract.EXTERNAL_SETTINGS_UPDATE_COLUMNS);
+        matrixCursor.newRow().add("newValue", (Object)n2).add("existing_value", (Object)currentValue).add("availability", (Object)availability).add("intent", (Object)intentString).add("icon", (Object)iconResource);
+        return (Cursor)matrixCursor;
+    }
+}
+
+/*
     public Cursor getAccessCursor(Context context) {
         int currentValue = getCurrentValue(context);
         int availability = getAvailability(context);
@@ -58,3 +90,4 @@ public class ActiveEdgeSetting implements Queryable {
         return matrixCursor;
     }
 }
+*/

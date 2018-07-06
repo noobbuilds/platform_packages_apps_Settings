@@ -22,9 +22,8 @@ import java.util.List;
 
 public class AssistGestureFeatureProviderGoogleImpl extends AssistGestureFeatureProviderImpl {
 
-
- private static boolean hasAssistGestureSensor(Context context) {
-      return context.getPackageManager().hasSystemFeature("android.hardware.sensor.assist");
+    private static boolean hasAssistGestureSensor(final Context context) {
+        return context.getPackageManager().hasSystemFeature("android.hardware.sensor.assist");
     }
 
 /*
@@ -44,19 +43,19 @@ public class AssistGestureFeatureProviderGoogleImpl extends AssistGestureFeature
         return true;
     }
 
-    private static boolean isOpaEligible(Context context) {
-        return Secure.getIntForUser(context.getContentResolver(), "systemui.google.opa_enabled", 0, -2) != 0;
-    }
+     private static boolean isOpaEligible(Context context) {
+         return Secure.getIntForUser(context.getContentResolver(), "systemui.google.opa_enabled", 0, -2) != 0;
+     }
 
-    public static boolean isOpaEnabled(Context context) {
-       Boolean GoogleSucks = false;
-        try {
-            GoogleSucks = ILockSettings.Stub.asInterface(ServiceManager.getService("lock_settings")).getBoolean("systemui.google.opa_user_enabled", false, -2);
-        } catch (Throwable e) {
-            Log.e("AssistGestureFeatureProviderGoogleImpl", "isOpaEnabled RemoteException", e);
-        }
-        return true;
-    }
+     public static boolean isOpaEnabled(Context context) {
+        Boolean GoogleSucks = false;
+         try {
+             GoogleSucks = Stub.asInterface(ServiceManager.getService("lock_settings")).getBoolean("systemui.google.opa_user_enabled", false, -2);
+         } catch (Throwable e) {
+             Log.e("AssistGestureFeatureProviderGoogleImpl", "isOpaEnabled RemoteException", e);
+         }
+         return true;
+     }
 
     public List<AbstractPreferenceController> getControllers(Context context, Lifecycle lifecycle) {
         List arrayList = new ArrayList();

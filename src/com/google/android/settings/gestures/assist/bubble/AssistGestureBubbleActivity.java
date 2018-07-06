@@ -55,7 +55,6 @@ public class AssistGestureBubbleActivity extends Activity {
         public void onGestureDetected() {
             AssistGestureBubbleActivity.this.mAssistGestureHelper.setListener(null);
             AssistGestureBubbleActivity.this.mAssistGestureHelper.unbindFromElmyraServiceProxy();
-            AssistGestureBubbleActivity.this.mHandler.post(new -$Lambda$JhDpZZNaSdk_1Sp0AuNF3jSBfCI(this));
         }
 
         public void onGestureProgress(float f, int i) {

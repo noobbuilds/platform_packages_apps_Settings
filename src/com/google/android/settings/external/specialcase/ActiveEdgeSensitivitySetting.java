@@ -1,9 +1,14 @@
 package com.google.android.settings.external.specialcase;
 
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.MatrixCursor;
+import android.net.Uri;
+import android.os.Binder;
+import android.support.annotation.VisibleForTesting;
 import android.provider.Settings.Secure;
+import android.provider.Settings;
 import com.android.settings.gestures.AssistGestureSettings;
 import com.android.settings.overlay.FeatureFactory;
 import com.google.android.settings.external.ExternalSettingsContract;
@@ -20,8 +25,9 @@ public class ActiveEdgeSensitivitySetting implements Queryable {
     }
 
     private String getScreenTitle(Context context) {
-        return context.getString(R.string.assist_gesture_squeeze_sensitivity_label);
+        return "Squeeze sensitivity";
     }
+
     private String getSupportedValues(Context context) {
         int maxSensitivityResourceInteger = AssistGestureSensitivityPreferenceController.getMaxSensitivityResourceInteger(context);
         if (maxSensitivityResourceInteger < 0) {
@@ -46,7 +52,7 @@ public class ActiveEdgeSensitivitySetting implements Queryable {
         int sensitivityInt = AssistGestureSensitivityPreferenceController.getSensitivityInt(context);
         String intentString = getIntentString(context, "assist_sensitivity", AssistGestureSettings.class, getScreenTitle(context));
         int iconResource = getIconResource();
-        Cursor matrixCursor = new MatrixCursor(ExternalSettingsContract.EXTERNAL_SETTINGS_QUERY_COLUMNS_WITH_SUPPORTED_VALUES);
+        MatrixCursor matrixCursor = new MatrixCursor(ExternalSettingsContract.EXTERNAL_SETTINGS_QUERY_COLUMNS_WITH_SUPPORTED_VALUES);
         matrixCursor.newRow().add("existing_value", Integer.valueOf(sensitivityInt)).add("availability", Integer.valueOf(getAvailability(context))).add("intent", intentString).add("icon", Integer.valueOf(iconResource)).add("supported_values", getSupportedValues(context));
         return matrixCursor;
     }
@@ -61,7 +67,7 @@ public class ActiveEdgeSensitivitySetting implements Queryable {
         if (!(shouldChangeValue(availability, sensitivityInt, i) && Secure.putFloat(context.getContentResolver(), "assist_gesture_sensitivity", convertSensitivityIntToFloat))) {
             i = sensitivityInt;
         }
-        Cursor matrixCursor = new MatrixCursor(ExternalSettingsContract.EXTERNAL_SETTINGS_UPDATE_COLUMNS);
+        MatrixCursor matrixCursor = new MatrixCursor(ExternalSettingsContract.EXTERNAL_SETTINGS_UPDATE_COLUMNS);
         matrixCursor.newRow().add("newValue", Integer.valueOf(i)).add("existing_value", Integer.valueOf(sensitivityInt)).add("availability", Integer.valueOf(availability)).add("intent", intentString).add("icon", Integer.valueOf(iconResource));
         return matrixCursor;
     }
