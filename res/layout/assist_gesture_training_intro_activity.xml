@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.android.setupwizardlib.GlifLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:icon="@drawable/ic_assist_gesture"
+    app:suwFooter="@layout/assist_gesture_training_intro_footer"
+    app:suwHeaderText="@string/assist_gesture_training_intro_title">
+
+    <LinearLayout
+        style="@style/SuwContentFrame"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:gravity="center_horizontal"
+        android:orientation="vertical">
+
+        <TextView
+            style="@style/SuwDescription.Glif"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/assist_gesture_training_intro_text" />
+
+        <Space
+            android:layout_width="0.0dip"
+            android:layout_height="0.0dip"
+            android:layout_weight="1.0" />
+
+        <FrameLayout
+            android:id="@id/assist_gesture_training_illustration"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <include layout="@layout/assist_gesture_illustration" />
+        </FrameLayout>
+
+        <Space
+            android:layout_width="0.0dip"
+            android:layout_height="0.0dip"
+            android:layout_weight="1.0" />
+    </LinearLayout>
+</com.android.setupwizardlib.GlifLayout>
