@@ -21,6 +21,7 @@ import com.google.android.settings.gestures.assist.AssistGestureHelper;
 import com.google.android.settings.gestures.assist.AssistGestureHelper.GestureListener;
 import java.util.ArrayList;
 import java.util.List;
+import com.android.settings.R;
 
 public class AssistGestureGameDrawable extends Drawable {
     private AssistGestureHelper mAssistGestureHelper;

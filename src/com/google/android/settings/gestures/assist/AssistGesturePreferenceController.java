@@ -10,6 +10,7 @@ import com.android.settings.overlay.FeatureFactory;
 import com.android.settingslib.core.lifecycle.Lifecycle;
 import com.android.settingslib.core.lifecycle.LifecycleObserver;
 import com.android.settingslib.core.lifecycle.events.OnResume;
+import com.android.settings.R;
 
 public class AssistGesturePreferenceController extends GesturePreferenceController implements LifecycleObserver, OnResume {
     static final int OFF = 0;

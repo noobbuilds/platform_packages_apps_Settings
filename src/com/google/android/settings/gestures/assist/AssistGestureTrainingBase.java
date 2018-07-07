@@ -8,6 +8,7 @@ import android.util.Log;
 
 import com.android.settings.core.InstrumentedActivity;
 import com.android.settings.overlay.FeatureFactory;
+import com.android.settings.R;
 
 public abstract class AssistGestureTrainingBase extends InstrumentedActivity implements AssistGestureHelper.GestureListener {
     protected AssistGestureHelper mAssistGestureHelper;

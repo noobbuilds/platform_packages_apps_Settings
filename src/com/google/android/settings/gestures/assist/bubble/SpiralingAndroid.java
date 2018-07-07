@@ -5,6 +5,7 @@ import android.content.res.Resources;
 import android.graphics.PorterDuff.Mode;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
+import com.android.settings.R;
 
 import java.util.Random;
 

@@ -15,6 +15,7 @@ import android.util.Log;
 import com.google.android.systemui.elmyra.IElmyraService;
 import com.google.android.systemui.elmyra.IElmyraService.Stub;
 import com.google.android.systemui.elmyra.IElmyraServiceSettingsListener;
+import com.android.settings.R;
 
 public class AssistGestureHelper {
   private boolean mBoundToService;

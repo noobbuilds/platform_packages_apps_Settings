@@ -10,6 +10,7 @@ import com.android.settings.gestures.AssistGestureFeatureProvider;
 import com.android.settings.gestures.GesturePreferenceController;
 import com.android.settings.overlay.FeatureFactory;
 import com.android.settingslib.core.lifecycle.Lifecycle;
+import com.android.settings.R;
 
 public class AssistGestureSilenceAlertsPreferenceController extends GesturePreferenceController
 {

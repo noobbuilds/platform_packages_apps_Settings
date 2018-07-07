@@ -19,6 +19,7 @@ import com.android.settingslib.core.AbstractPreferenceController;
 import com.android.settingslib.core.lifecycle.Lifecycle;
 import java.util.ArrayList;
 import java.util.List;
+import com.android.settings.R;
 
 public class AssistGestureFeatureProviderGoogleImpl extends AssistGestureFeatureProviderImpl {
 

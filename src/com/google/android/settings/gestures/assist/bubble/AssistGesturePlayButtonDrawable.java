@@ -9,6 +9,7 @@ import android.graphics.Path.FillType;
 import android.graphics.PointF;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
+import com.android.settings.R;
 
 public class AssistGesturePlayButtonDrawable extends Drawable {
     private Rect mBounds;

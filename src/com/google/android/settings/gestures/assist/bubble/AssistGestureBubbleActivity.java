@@ -12,6 +12,7 @@ import android.widget.TextView;
 import com.google.android.settings.gestures.assist.AssistGestureHelper;
 import com.google.android.settings.gestures.assist.AssistGestureHelper.GestureListener;
 import com.google.android.settings.gestures.assist.bubble.AssistGestureGameDrawable.GameStateListener;
+import com.android.settings.R;
 
 public class AssistGestureBubbleActivity extends Activity {
     private AssistGestureHelper mAssistGestureHelper;

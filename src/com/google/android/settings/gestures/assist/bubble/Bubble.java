@@ -5,6 +5,7 @@ import android.graphics.PointF;
 import android.graphics.Rect;
 import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
+import com.android.settings.R;
 
 public class Bubble {
     private int mAlpha;
