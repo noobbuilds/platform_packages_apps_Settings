@@ -62,6 +62,7 @@ public abstract class AssistGestureTrainingBase extends InstrumentedActivity imp
 
     public void onResume() {
         super.onResume();
+        Settings.Secure.putInt(this.getContentResolver(), "assist_gesture_enabled", 1);
         boolean b;
         b = Settings.Secure.getInt(this.getContentResolver(), "assist_gesture_enabled", 1) != 0;
         if (!FeatureFactory.getFactory(this).getAssistGestureFeatureProvider().isSupported(this)) {

@@ -3,6 +3,8 @@ package com.google.android.settings.external.specialcase;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.MatrixCursor;
+import com.android.settings.R;
+import android.provider.Settings;
 import android.provider.Settings.Secure;
 import com.android.settings.gestures.AssistGestureSettings;
 import com.android.settings.overlay.FeatureFactory;
@@ -17,6 +19,7 @@ public class ActiveEdgeSetting implements Queryable {
     }
 
     private int getCurrentValue(Context context) {
+        Settings.Secure.putInt(context.getContentResolver(), SECURE_KEY, 1);
         return Secure.getInt(context.getContentResolver(), "assist_gesture_enabled", 1) != 0 ? 1 : 0;
     }
 

@@ -29,12 +29,12 @@ public class AssistGestureFeatureProviderImpl implements AssistGestureFeaturePro
 
     @Override
     public boolean isSupported(Context context) {
-        return false;
+        return true;
     }
 
     @Override
     public boolean isSensorAvailable(Context context) {
-        return false;
+        return true;
     }
 
     @Override

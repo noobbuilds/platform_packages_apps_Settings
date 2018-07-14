@@ -67,9 +67,9 @@ public class AssistGestureSettingsPreferenceController extends GesturePreference
     @Override
     public boolean isAvailable() {
         if (mAssistOnly) {
-            return mFeatureProvider.isSupported(mContext);
+            return true; //mFeatureProvider.isSupported(mContext);
         } else {
-            return mFeatureProvider.isSensorAvailable(mContext);
+            return true; //mFeatureProvider.isSensorAvailable(mContext);
         }
     }
 
@@ -102,13 +102,14 @@ public class AssistGestureSettingsPreferenceController extends GesturePreference
                 mScreen.addPreference(mPreference);
             }
         } else {
-            mScreen.removePreference(mPreference);
+           mScreen.addPreference(mPreference); // mScreen.removePreference(mPreference);
         }
     }
 
     private boolean isAssistGestureEnabled() {
-        return Settings.Secure.getInt(mContext.getContentResolver(),
-                SECURE_KEY_ASSIST, ON) != 0;
+          return true;
+   //     return Settings.Secure.getInt(mContext.getContentResolver(),
+   //             SECURE_KEY_ASSIST, ON) != 0;
     }
 
     private boolean isSilenceGestureEnabled() {
@@ -118,7 +119,7 @@ public class AssistGestureSettingsPreferenceController extends GesturePreference
 
     @Override
     public void updateState(Preference preference) {
-        boolean isEnabled = isAssistGestureEnabled() && mFeatureProvider.isSupported(mContext);
+        boolean isEnabled = true; //isAssistGestureEnabled() && mFeatureProvider.isSupported(mContext);
 
         if (!mAssistOnly) {
             isEnabled = isEnabled || isSilenceGestureEnabled();
@@ -138,8 +139,9 @@ public class AssistGestureSettingsPreferenceController extends GesturePreference
     @Override
     public boolean onPreferenceChange(Preference preference, Object newValue) {
         final boolean enabled = (boolean) newValue;
-        Settings.Secure.putInt(mContext.getContentResolver(), SECURE_KEY_ASSIST,
-                enabled ? ON : OFF);
+        Settings.Secure.putInt(mContext.getContentResolver(), SECURE_KEY_ASSIST, 1);
+//        Settings.Secure.putInt(mContext.getContentResolver(), SECURE_KEY_ASSIST,
+//                enabled ? ON : OFF);
         updateState(preference);
         return true;
     }
