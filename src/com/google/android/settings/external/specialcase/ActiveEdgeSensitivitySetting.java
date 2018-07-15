@@ -14,6 +14,7 @@ import com.android.settings.overlay.FeatureFactory;
 import com.google.android.settings.external.ExternalSettingsContract;
 import com.google.android.settings.external.Queryable;
 import com.google.android.settings.gestures.assist.AssistGestureSensitivityPreferenceController;
+import com.android.settings.R;
 
 public class ActiveEdgeSensitivitySetting implements Queryable {
     private static int getAvailability(Context context) {
@@ -24,10 +25,9 @@ public class ActiveEdgeSensitivitySetting implements Queryable {
         return 0;
     }
 
-    private String getScreenTitle() {
-        return "Squeeze sensitivity";
+    private String getScreenTitle(Context context) {
+        return context.getString(R.string.assist_gesture_squeeze_sensitivity_label);
     }
-
     private String getSupportedValues(Context context) {
         int maxSensitivityResourceInteger = AssistGestureSensitivityPreferenceController.getMaxSensitivityResourceInteger(context);
         if (maxSensitivityResourceInteger < 0) {
@@ -50,7 +50,7 @@ public class ActiveEdgeSensitivitySetting implements Queryable {
 
     public Cursor getAccessCursor(Context context) {
         int sensitivityInt = AssistGestureSensitivityPreferenceController.getSensitivityInt(context);
-        String intentString = getIntentString(context, "assist_sensitivity", AssistGestureSettings.class, getScreenTitle());
+        String intentString = getIntentString(context, "assist_sensitivity", AssistGestureSettings.class, getScreenTitle(context));
         int iconResource = getIconResource();
         MatrixCursor matrixCursor = new MatrixCursor(ExternalSettingsContract.EXTERNAL_SETTINGS_QUERY_COLUMNS_WITH_SUPPORTED_VALUES);
         matrixCursor.newRow().add("existing_value", Integer.valueOf(sensitivityInt)).add("availability", Integer.valueOf(getAvailability(context))).add("intent", intentString).add("icon", Integer.valueOf(iconResource)).add("supported_values", getSupportedValues(context));
@@ -61,7 +61,7 @@ public class ActiveEdgeSensitivitySetting implements Queryable {
         validateInput(context, i);
         int sensitivityInt = AssistGestureSensitivityPreferenceController.getSensitivityInt(context);
         int availability = getAvailability(context);
-        String intentString = getIntentString(context, "assist_sensitivity", AssistGestureSettings.class, getScreenTitle());
+        String intentString = getIntentString(context, "assist_sensitivity", AssistGestureSettings.class, getScreenTitle(context));
         int iconResource = getIconResource();
         float convertSensitivityIntToFloat = AssistGestureSensitivityPreferenceController.convertSensitivityIntToFloat(context, i);
         if (!(shouldChangeValue(availability, sensitivityInt, i) && Secure.putFloat(context.getContentResolver(), "assist_gesture_sensitivity", convertSensitivityIntToFloat))) {
